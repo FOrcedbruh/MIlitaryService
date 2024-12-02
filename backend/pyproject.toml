@@ -11,6 +11,9 @@ fastapi = {extras = ["all"], version = "^0.115.5"}
 bcrypt = "^4.2.1"
 requests = "^2.32.3"
 asyncio = "^3.4.3"
+alembic = "^1.14.0"
+python-dotenv = "^1.0.1"
+asyncpg = "^0.30.0"
 
 
 [build-system]
