@@ -5,15 +5,15 @@ from typing import AsyncGenerator
 class DB():
     def __init__(
             self,
-            db_url: str = settings.dbcfg.url,
-            pool_size: int = settings.dbcfg.pool_size,
-            echo: bool = settings.dbcfg.echo
+            db_url: str,
+            pool_size: int,
+            echo: bool
         ):
 
         self.engine = create_async_engine(
+            url=db_url,
             echo=echo,
-            pool_size=pool_size,
-            url=db_url
+            pool_size=pool_size
         )
         self.session_generation: AsyncGenerator[AsyncSession, None] = async_sessionmaker(
             bind=self.engine,
@@ -25,4 +25,5 @@ class DB():
         async with self.generate_session as session:
             yield session
 
-db = DB()
+
+db = DB(db_url=settings.dbcfg.url, pool_size=settings.dbcfg.pool_size, echo=settings.dbcfg.echo)

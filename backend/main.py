@@ -11,7 +11,6 @@ app.add_middleware(
 )
 
 
-
 @app.get("/")
 def index():
     return {
@@ -19,10 +18,5 @@ def index():
     }
 
 
-
 if __name__ == "__main__":
-    uvicorn.run(
-        app="main:app",
-        port=settings.runcfg.port,
-        reload=settings.runcfg.reload
-    )
+    uvicorn.run(app="main:app", port=int(settings.runcfg.port), reload=settings.runcfg.reload)

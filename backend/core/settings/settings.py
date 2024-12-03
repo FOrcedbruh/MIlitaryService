@@ -6,20 +6,19 @@ import os
 load_dotenv()
 
 DB_URL: str = os.environ.get("DB_URL")
-PORT: str = os.environ.get("PORT")
+PORT: int = os.environ.get("PORT")
 
 
 class RunConfig(BaseModel):
-    port: int = int(PORT),
+    port: int = PORT
     reload: bool = True
 
 
 
 class DBConfig(BaseModel):
-    url: str = DB_URL,
+    url: str = DB_URL
     pool_size: int = 50
     echo: bool = True
-
 
 
 class Settings(BaseSettings):
