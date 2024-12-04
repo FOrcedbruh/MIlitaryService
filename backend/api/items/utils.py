@@ -1,5 +1,5 @@
 from fastapi import Body
-from .schemas import ItemCreateSchema
+from .schemas import ItemCreateSchema, ItemUpdateSchema
 
 
 def GetCreateItemData(
@@ -12,3 +12,8 @@ def GetCreateItemData(
         cost=item_in.cost,
         images=item_in.images
     )
+
+def GetUpdateItemData(
+    item_in: ItemUpdateSchema = Body()
+) -> ItemUpdateSchema:
+    return ItemUpdateSchema(**item_in.model_dump())

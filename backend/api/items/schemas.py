@@ -15,7 +15,7 @@ class ItemReadSchema(ItemCreateSchema):
 
 class ItemUpdateSchema(BaseModel):
     item_name: str | None = None
-    description: str | None = Field(max_length=500)
+    description: str | None = None
     limit: int | None = None
     cost: int | None = None
     images: list[str] | None = None

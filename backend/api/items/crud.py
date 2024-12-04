@@ -2,8 +2,8 @@ from fastapi import status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.models import Item
-from . import utils
-from .schemas import ItemCreateSchema
+from .schemas import ItemCreateSchema, ItemReadSchema, ItemUpdateSchema
+
 
 
 
@@ -27,4 +27,58 @@ async def create_item(session: AsyncSession, item_in: ItemCreateSchema) -> dict:
         "detail": "Товар усвешно добавлен",
         "created_item": new_item
     }
+
+
+async def get_items(session: AsyncSession, limit: int) -> list[ItemReadSchema]:
+    stmt = await session.execute(select(Item).limit(limit=limit).offset(offset=0))
+    read_items = stmt.scalars().all()
+
+    if not read_items:
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT,
+            detail="Товаров пока нет"
+        )
     
+    return list(read_items)
+
+
+async def update_item(session: AsyncSession, item_in: ItemUpdateSchema, item_id: int) -> dict:
+    item_for_update = await session.get(Item, item_id)
+
+
+    if not item_for_update:
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT,
+            detail="Товар не найден"
+        )
+    
+    for name, value in item_in.model_dump(exclude_none=True).items():
+        setattr(item_for_update, name, value)
+
+    await session.commit()
+
+    return {
+        "status": status.HTTP_200_OK,
+        "detail": "Товар обновлен",
+    }
+    
+
+
+async def delete_item(session: AsyncSession, item_id: int) -> dict:
+    item_for_delete = await session.get(Item, item_id)
+
+    if not item_for_delete:
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT,
+            detail="Товар не найден"
+        )
+    
+    await session.delete(item_for_delete)
+    await session.commit()
+
+
+    return {
+        "status": status.HTTP_200_OK,
+        "detail": "Товар удален",
+        "deleted_item": item_for_delete
+    }
