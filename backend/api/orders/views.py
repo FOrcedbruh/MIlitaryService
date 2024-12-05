@@ -13,5 +13,5 @@ router = APIRouter(prefix="/orders", tags=["Orders"])
 async def index(
     session: AsyncSession = Depends(db.generate_session),
     order_in: OrderCreateSchema = Depends(utils.GetCreateItemData)
-) -> dict:
+):
     return await crud.create_order(session=session, order_in=order_in)

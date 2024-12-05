@@ -1,14 +1,16 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import ForeignKey
+from sqlalchemy import Table, Column, UniqueConstraint, ForeignKey, Integer
 from .base import Base
 
 
-class Order_Items(Base):
-    __tablename__ = "order_items"
+order_items_association_table = Table(
+    "order_items_association",
+    Base.metadata,
+    Column("order_id", ForeignKey("orders.id"), nullable=False),
+    Column("item_id", ForeignKey("items.id"), nullable=False),
+    UniqueConstraint("order_id", "item_id", name="idx_unique_order_item"),
+    Column("id", Integer, primary_key=True)
+)
 
-    item_id: Mapped[int] = mapped_column(ForeignKey("items.id", ondelete="CASCADE"), primary_key=True)
-
-    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"), primary_key=True)
 
 
 

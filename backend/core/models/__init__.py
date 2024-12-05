@@ -2,10 +2,10 @@ __all__ = (
     "Base",
     "Item",
     "Order",
-    "Order_Items"
+    "order_items_association_table"
 )
 
 from .base import Base
 from .item import Item
 from .order import Order
-from .order_items import Order_Items
+from .order_items import order_items_association_table

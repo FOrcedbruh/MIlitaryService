@@ -3,14 +3,13 @@ from datetime import datetime
 
 
 class OrderCreateSchema(BaseModel):
-    order_number: str = Field(20)
+    order_number: str = Field(min_length=8)
     cost_sum: int
-    items: list[int]
+    item_ids: list[int]
     address: str
     delivery_type: str
     payment_type: str
-    isPaid: bool
-    items: list[int]
+    is_paid: bool
     customer_phone: str
     customer_email: EmailStr
 
