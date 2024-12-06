@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.db import db
 from .schemas import ItemCreateSchema, ItemReadSchema, ItemUpdateSchema
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/items", tags=["Items"])
 @router.post("/add")
 async def index(
     session: AsyncSession = Depends(db.generate_session),
-    item_in: ItemCreateSchema = Depends(utils.GetCreateItemData)
+    item_in: ItemCreateSchema = Depends(utils.GetCreateItemData),
 ) -> dict:
     return await crud.create_item(session=session, item_in=item_in)
 
@@ -23,6 +23,15 @@ async def index(
     limit: int = Body()
 ) -> list[ItemReadSchema]:
     return await crud.get_items(session=session, limit=limit)
+
+
+@router.patch("/append_images/{item_id}")
+async def index(
+    item_id: int,
+    session: AsyncSession = Depends(db.generate_session),
+    images: list[UploadFile] = File()
+):
+    return await crud.append_images_to_item(images=images, item_id=item_id, session=session)
 
 
 @router.patch("/update")

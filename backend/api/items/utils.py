@@ -9,8 +9,7 @@ def GetCreateItemData(
         item_name=item_in.item_name,
         description=item_in.description,
         limit=item_in.limit,
-        cost=item_in.cost,
-        images=item_in.images
+        cost=item_in.cost
     )
 
 def GetUpdateItemData(

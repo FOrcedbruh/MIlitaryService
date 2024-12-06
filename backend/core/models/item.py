@@ -18,6 +18,6 @@ class Item(Base):
     description: Mapped[str] = mapped_column(String(500))
     limit: Mapped[int] = mapped_column(nullable=False)
     cost: Mapped[int] = mapped_column(nullable=False)
-    images: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=False)
+    images: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=True)
 
     orders: Mapped[list["Order"]] = relationship(back_populates="items", secondary=order_items_association_table)

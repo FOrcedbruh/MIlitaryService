@@ -1,10 +1,10 @@
-from fastapi import status, HTTPException
+from fastapi import status, HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.models import Item
 from .schemas import ItemCreateSchema, ItemReadSchema, ItemUpdateSchema
-
-
+from core.settings import settings
+from core import s3_client
 
 
 async def create_item(session: AsyncSession, item_in: ItemCreateSchema) -> dict:
@@ -27,6 +27,43 @@ async def create_item(session: AsyncSession, item_in: ItemCreateSchema) -> dict:
         "detail": "Товар усвешно добавлен",
         "created_item": new_item
     }
+
+
+async def append_images_to_item(session: AsyncSession, images: list[UploadFile], item_id: int):
+    item_to_update = await session.get(Item, item_id)
+    images_to_update: list[str] = []
+
+    if not item_to_update:
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT,
+            detail="Товар не найден"
+        )
+    try: 
+        await s3_client.put_files(images=images)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Ошибка в s3 хранилище: {e}"
+        )
+    for image in images:
+        images_to_update.append(settings.s3cfg.get_url + "/" + image.filename)
+    
+
+    if item_to_update.images:
+        item_to_update.images += images_to_update
+    else:
+        item_to_update.images = images_to_update
+
+    await session.commit()
+
+    return {
+        "status": status.HTTP_200_OK,
+        "detail": "Изображения успешно добавлены"
+    }
+
+    
+    
+
 
 
 async def get_items(session: AsyncSession, limit: int) -> list[ItemReadSchema]:

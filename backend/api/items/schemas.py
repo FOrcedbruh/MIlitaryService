@@ -7,11 +7,12 @@ class ItemCreateSchema(BaseModel):
     description: str = Field(max_length=500)
     limit: int
     cost: int
-    images: list[str]
+    images: list[str] | None = None
 
 class ItemReadSchema(ItemCreateSchema):
     id: int
     created_at: datetime
+    
 
 class ItemUpdateSchema(BaseModel):
     item_name: str | None = None
