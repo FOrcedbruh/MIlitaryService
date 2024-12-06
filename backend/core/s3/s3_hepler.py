@@ -47,6 +47,29 @@ class S3_Client():
             "detail": f"Успешна загрузка файла {filename}"
         }
     
+    async def delete_objects(
+        self,
+        filenames: list[str]
+    ):
+        try:
+            objects_to_delete: list[dict] = []
+            for filename in filenames:
+                objects_to_delete.append({"Key": filename})
+            
+            async with self.get_client() as client:
+                await client.delete_objects(Bucket=self.bucket_name, Delete={"Objects": objects_to_delete})
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Ошибка удаления файлов из s3 хранилища: {e}"
+            )
+        
+        
+        return {
+            "status": status.HTTP_200_OK,
+            "detail": "Успешное удаление файлов"
+        }
+
 
 
 s3_client = S3_Client(

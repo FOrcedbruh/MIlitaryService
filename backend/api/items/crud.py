@@ -110,6 +110,11 @@ async def delete_item(session: AsyncSession, item_id: int) -> dict:
             detail="Товар не найден"
         )
     
+    if item_for_delete.images:
+        filenames: list[str] = [image[len(settings.s3cfg.get_url) + 1:] for image in item_for_delete.images]
+        await s3_client.delete_objects(filenames=filenames)
+
+
     await session.delete(item_for_delete)
     await session.commit()
 
