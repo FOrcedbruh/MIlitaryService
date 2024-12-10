@@ -7,9 +7,11 @@ from settings import settings
 import logging
 import sys
 from keyboards import main_keyboard
-
+from api import requestHelper
+import requests
 
 dp = Dispatcher()
+
 
 
 
@@ -22,6 +24,7 @@ async def index(message: Message) -> None:
 async def index(message: Message) -> None:
     if (message.text == "Посмотреть все заказы"):
         await message.answer("Ваши заказы")
+        print(await requestHelper.get_orders())
         return
     if (message.text == "Последний заказ"):
         await message.answer("Ваш последний заказ")

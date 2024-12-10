@@ -9,6 +9,7 @@ from . import utils, crud
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
+
 @router.post("/create")
 async def index(
     session: AsyncSession = Depends(db.generate_session),
@@ -16,10 +17,25 @@ async def index(
 ) -> dict:
     return await crud.create_order(session=session, order_in=order_in)
 
+@router.get("/")
+async def index(
+    session: AsyncSession = Depends(db.generate_session)
+):
+    return await crud.get_orders(session=session)
+
+
+
+@router.get("/last_order")
+async def index(
+    session: AsyncSession = Depends(db.generate_session)
+) -> OrderReadSchema:
+    return await crud.get_last_order(session=session)
+
 
 @router.get("/{order_id}", response_model_exclude_none=True)
 async def index(
     order_id: int,
     session: AsyncSession = Depends(db.generate_session)
-) -> OrderReadSchema:
+):
     return await crud.get_order(session=session, order_id=order_id)
+
