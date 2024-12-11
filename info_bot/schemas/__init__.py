@@ -1,6 +1,6 @@
 __all__ = (
-    "OrderSchema",
-    "ItemSchema"
+    "OrderInfoReadSchema",
 )
 
-from .schemas import OrderSchema, ItemSchema
+
+from .schemas import OrderInfoReadSchema

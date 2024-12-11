@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schemas import OrderCreateSchema, OrderReadSchema
+from .schemas import OrderCreateSchema, OrderReadSchema, OrderInfoReadSchema
 from core.models import Order, Item
 from fastapi import status, HTTPException
 from sqlalchemy import select
@@ -41,21 +41,6 @@ async def get_order(session: AsyncSession, order_id: int) -> OrderReadSchema:
     
     return read_order
 
-async def get_last_order(session: AsyncSession) -> Order:
-    stmt = await session.execute(select(Order)
-            .order_by(Order.id.desc()).limit(1)
-                .options(selectinload(Order.items)))
-    
-    last_order = stmt.scalar()
-
-    if not last_order:
-        raise HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="Последний заказ не найден"
-        )
-
-    return last_order
-
 
 
 async def get_orders(session: AsyncSession) -> list[Order]:
@@ -64,7 +49,7 @@ async def get_orders(session: AsyncSession) -> list[Order]:
 
     if not read_orders:
         raise HTTPException(
-            status_code=status.HTTP_200_OK,
+            status_code=status.HTTP_204_NO_CONTENT,
             detail="Нет заказов"
         )
     

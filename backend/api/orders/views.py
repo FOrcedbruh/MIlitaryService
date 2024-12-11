@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.db import db
-from .schemas import OrderCreateSchema, OrderReadSchema
+from .schemas import OrderCreateSchema, OrderInfoReadSchema
 from . import utils, crud
-
+from .bot_api import bot_crud
 
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
@@ -17,6 +17,7 @@ async def index(
 ) -> dict:
     return await crud.create_order(session=session, order_in=order_in)
 
+
 @router.get("/")
 async def index(
     session: AsyncSession = Depends(db.generate_session)
@@ -24,12 +25,18 @@ async def index(
     return await crud.get_orders(session=session)
 
 
-
-@router.get("/last_order")
+@router.get("/info")
 async def index(
     session: AsyncSession = Depends(db.generate_session)
-) -> OrderReadSchema:
-    return await crud.get_last_order(session=session)
+):
+    return await bot_crud.get_orders_for_info(session=session)
+
+
+@router.get("/last_order", response_model=OrderInfoReadSchema)
+async def index(
+    session: AsyncSession = Depends(db.generate_session)
+) -> OrderInfoReadSchema:
+    return await bot_crud.get_last_order(session=session)
 
 
 @router.get("/{order_id}", response_model_exclude_none=True)

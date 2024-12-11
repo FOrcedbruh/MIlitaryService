@@ -12,11 +12,10 @@ app.add_middleware(
 )
 
 
-
 @app.get("/")
 def index():
     return {
-        "message": "Welcome"
+        "message": "Welcome!"
     }
 
 

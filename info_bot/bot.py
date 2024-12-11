@@ -8,11 +8,11 @@ import logging
 import sys
 from keyboards import main_keyboard
 from api import requestHelper
-import requests
+from schemas import OrderInfoReadSchema
+from requests import Response
+
 
 dp = Dispatcher()
-
-
 
 
 @dp.message(CommandStart())
@@ -23,11 +23,15 @@ async def index(message: Message) -> None:
 @dp.message()
 async def index(message: Message) -> None:
     if (message.text == "Посмотреть все заказы"):
-        await message.answer("Ваши заказы")
-        print(await requestHelper.get_orders())
+        orders: Response = requestHelper.get_orders()
+        orders_json: list[OrderInfoReadSchema] = orders.json()
+        for order_json in orders_json:
+            await requestHelper.orders_response_form(**order_json, message=message)
         return
     if (message.text == "Последний заказ"):
-        await message.answer("Ваш последний заказ")
+        order: Response = requestHelper.get_last_order()
+        order_json = order.json()
+        await requestHelper.orders_response_form(**order_json, message=message)
         return
     else:
         await message.answer("Некорректная команда")
