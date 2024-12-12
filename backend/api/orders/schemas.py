@@ -12,13 +12,15 @@ class OrderCreateSchema(BaseModel):
     is_paid: bool
     customer_phone: str
     customer_email: EmailStr
+    customer_name: str = Field(max_length=100)
+    products: list[str]
 
 class OrderReadSchema(OrderCreateSchema):
     id: int
     created_at: datetime
     items: list[ItemReadSchema]
     item_ids: None = None
-
+    
 
 class OrderInfoReadSchema(BaseModel):
     cost_sum: int
@@ -29,3 +31,6 @@ class OrderInfoReadSchema(BaseModel):
     is_paid: bool
     customer_phone: str
     customer_email: str
+    customer_name: str = Field(max_length=100)
+    created_at: datetime
+    products: list[str]

@@ -14,5 +14,7 @@ def GetCreateItemData(
         customer_email=order_in.customer_email,
         customer_phone=order_in.customer_phone,
         cost_sum=order_in.cost_sum,
-        item_ids=order_in.item_ids
+        item_ids=order_in.item_ids,
+        customer_name=order_in.customer_name,
+        products=order_in.products
     )

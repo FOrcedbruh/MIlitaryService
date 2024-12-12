@@ -44,7 +44,7 @@ async def get_order(session: AsyncSession, order_id: int) -> OrderReadSchema:
 
 
 async def get_orders(session: AsyncSession) -> list[Order]:
-    stmt = await session.execute(select(Order))
+    stmt = await session.execute(select(Order).options(selectinload(Order.items)))
     read_orders = stmt.scalars().all()
 
     if not read_orders:

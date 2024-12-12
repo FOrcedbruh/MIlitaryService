@@ -25,7 +25,9 @@ class RequestsHelper():
         cost_sum: int,
         customer_phone: str,
         customer_email: str,
-
+        customer_name: str,
+        created_at: str,
+        products: str
     ):
         await message.answer(text=(
             fmt.text(
@@ -37,6 +39,8 @@ class RequestsHelper():
                 fmt.text(f"Общая стоимость: {cost_sum}"),
                 fmt.text(f"Телефон заказчика: {customer_phone}"),
                 fmt.text(f"Почта заказчика: {customer_email}"),
+                fmt.text(f"Имя заказчика: {customer_name}\n"),
+                fmt.text(f"Заказ оформлен {created_at}"),
                 sep="\n"
             )
         ), parse_mode="HTML")

@@ -25,16 +25,19 @@ async def index(message: Message) -> None:
     if (message.text == "Посмотреть все заказы"):
         orders: Response = requestHelper.get_orders()
         orders_json: list[OrderInfoReadSchema] = orders.json()
+        await message.answer(text="Вот все текущие и завершенные заказы 📦")
         for order_json in orders_json:
             await requestHelper.orders_response_form(**order_json, message=message)
         return
     if (message.text == "Последний заказ"):
         order: Response = requestHelper.get_last_order()
         order_json = order.json()
+        await message.answer(text="Последний оформленный заказ ⏳")
         await requestHelper.orders_response_form(**order_json, message=message)
-        return
     else:
         await message.answer("Некорректная команда")
+    return
+    
 
 
 async def main() -> None:
