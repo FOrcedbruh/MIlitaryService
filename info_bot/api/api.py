@@ -29,6 +29,9 @@ class RequestsHelper():
         created_at: str,
         products: str
     ):
+        products_list: str = ""
+        for i, product in enumerate(products):
+            products_list += f"{i + 1}. {product}\n"
         await message.answer(text=(
             fmt.text(
                 fmt.text(fmt.hbold(f"Номер заказа: {order_number}")),
@@ -40,6 +43,10 @@ class RequestsHelper():
                 fmt.text(f"Телефон заказчика: {customer_phone}"),
                 fmt.text(f"Почта заказчика: {customer_email}"),
                 fmt.text(f"Имя заказчика: {customer_name}\n"),
+                fmt.text(
+                    fmt.text(fmt.hbold("Товары: \n")),
+                    fmt.text(products_list),
+                ),
                 fmt.text(f"Заказ оформлен {created_at}"),
                 sep="\n"
             )
