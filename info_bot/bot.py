@@ -19,24 +19,40 @@ dp = Dispatcher()
 async def index(message: Message) -> None:
     await message.answer(text=f"{message.from_user.full_name}, бот готов к работе", reply_markup=main_keyboard())
 
-
 @dp.message()
 async def index(message: Message) -> None:
     if (message.text == "Посмотреть все заказы"):
-        orders: Response = requestHelper.get_orders()
-        orders_json: list[OrderInfoReadSchema] = orders.json()
-        await message.answer(text="Вот все текущие и завершенные заказы 📦")
-        for order_json in orders_json:
-            await requestHelper.orders_response_form(**order_json, message=message)
-        return
+        try:
+            orders: Response = requestHelper.get_orders()
+            orders_json: list[OrderInfoReadSchema] = orders.json()
+            if (orders.status_code != 200):
+                await requestHelper.error_response_form(message=message, error_reason=orders.reason, status_code=orders.status_code)
+                return
+            await message.answer(text="Вот все текущие и завершенные заказы 📦")
+            for order_json in orders_json:
+                await requestHelper.orders_response_form(**order_json, message=message)
+            return
+        except Exception:
+            await message.answer(text=requestHelper.INACTIVE)
+            return
+        
     if (message.text == "Последний заказ"):
-        order: Response = requestHelper.get_last_order()
-        order_json = order.json()
-        await message.answer(text="Последний оформленный заказ ⏳")
-        await requestHelper.orders_response_form(**order_json, message=message)
+        try:
+            order: Response = requestHelper.get_last_order()
+            if (order.status_code != 200):
+                await requestHelper.error_response_form(message=message, error_reason=order.reason, status_code=order.status_code)
+                return
+            order_json = order.json()
+            await message.answer(text="Последний оформленный заказ ⏳")
+            await requestHelper.orders_response_form(**order_json, message=message)
+            return
+        except Exception:
+            await message.answer(text=requestHelper.INACTIVE)
     else:
         await message.answer("Некорректная команда")
     return
+        
+        
     
 
 

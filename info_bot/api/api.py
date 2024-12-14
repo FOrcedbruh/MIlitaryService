@@ -52,6 +52,19 @@ class RequestsHelper():
             )
         ), parse_mode="HTML")
         return
+    
+    def error_text_message(self, error_reason: str, status_code: int) -> str:
+        return f"Ошиба на сервере: {str(status_code)} {error_reason}"
+    
+    async def error_response_form(
+        self,
+        message: Message,
+        error_reason: str,
+        status_code: int
+    ):
+        await message.answer(text=self.error_text_message(error_reason=error_reason, status_code=status_code))
+
+    INACTIVE: str = "Сервер неактивен или упал ⚙️"
 
 
 requestHelper = RequestsHelper()
