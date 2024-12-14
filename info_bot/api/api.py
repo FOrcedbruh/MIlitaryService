@@ -32,6 +32,9 @@ class RequestsHelper():
         products_list: str = ""
         for i, product in enumerate(products):
             products_list += f"{i + 1}. {product}\n"
+
+        created_at_date: str = created_at[:10].replace("-", ".")
+        created_at_time: str = created_at[11:16]
         await message.answer(text=(
             fmt.text(
                 fmt.text(fmt.hbold(f"Номер заказа: {order_number}")),
@@ -47,7 +50,7 @@ class RequestsHelper():
                     fmt.text(fmt.hbold("Товары: \n")),
                     fmt.text(products_list),
                 ),
-                fmt.text(f"Заказ оформлен {created_at}"),
+                fmt.text(f"Заказ оформлен {created_at_date} в {created_at_time}"),
                 sep="\n"
             )
         ), parse_mode="HTML")

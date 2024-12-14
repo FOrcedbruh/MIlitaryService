@@ -24,8 +24,7 @@ async def create_item(session: AsyncSession, item_in: ItemCreateSchema) -> dict:
 
     return {
         "status": status.HTTP_201_CREATED,
-        "detail": "Товар усвешно добавлен",
-        "created_item": new_item
+        "detail": "Товар успешно добавлен"
     }
 
 
@@ -35,7 +34,7 @@ async def append_images_to_item(session: AsyncSession, images: list[UploadFile],
 
     if not item_to_update:
         raise HTTPException(
-            status_code=status.HTTP_204_NO_CONTENT,
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Товар не найден"
         )
     try: 

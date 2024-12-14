@@ -1,9 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schemas import OrderCreateSchema, OrderReadSchema, OrderInfoReadSchema
+from .schemas import OrderCreateSchema, OrderReadSchema
 from core.models import Order, Item
 from fastapi import status, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+from . import utils
 
 
 async def create_order(session: AsyncSession, order_in: OrderCreateSchema) -> dict:
@@ -12,21 +13,21 @@ async def create_order(session: AsyncSession, order_in: OrderCreateSchema) -> di
 
     if not items:
         raise HTTPException(
-            status_code=status.HTTP_204_NO_CONTENT,
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Товаров не найдено"
         )
 
 
     new_order = Order(**order_in.model_dump(exclude="item_ids"))
     new_order.items.extend(items)
+    new_order.order_number = utils.generate_order_number()
 
     session.add(new_order)
     await session.commit()
 
     return {
-        "status": status.HTTP_201_CREATED,
+        "status": status.HTTP_406_NOT_ACCEPTABLE,
         "detail": "Заказ успешно оформлен",
-        "created_order": new_order
     }
 
 async def get_order(session: AsyncSession, order_id: int) -> OrderReadSchema:
@@ -35,7 +36,7 @@ async def get_order(session: AsyncSession, order_id: int) -> OrderReadSchema:
 
     if not read_order:
         raise HTTPException(
-            status_code=status.HTTP_204_NO_CONTENT,
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Товар не найден"
         )
     
@@ -49,8 +50,25 @@ async def get_orders(session: AsyncSession) -> list[Order]:
 
     if not read_orders:
         raise HTTPException(
-            status_code=status.HTTP_204_NO_CONTENT,
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Нет заказов"
         )
     
     return list(read_orders)
+
+async def erase_order(session: AsyncSession, order_id: int) -> dict:
+    order_to_erase = await session.get(Order, order_id)
+
+    if not order_to_erase:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Заказ не найден"
+        )
+    
+    await session.delete(order_to_erase)
+    await session.commit()
+
+    return {
+        "status": status.HTTP_200_OK,
+        "detail": "Товар успешно удален"
+    }

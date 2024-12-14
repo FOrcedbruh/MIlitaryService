@@ -1,6 +1,6 @@
 from fastapi import Body
 from .schemas import ItemCreateSchema, ItemUpdateSchema
-
+import random
 
 def GetCreateItemData(
     item_in: ItemCreateSchema = Body()

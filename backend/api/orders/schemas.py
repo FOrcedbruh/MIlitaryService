@@ -3,7 +3,7 @@ from datetime import datetime
 from api.items.schemas import ItemReadSchema
 
 class OrderCreateSchema(BaseModel):
-    order_number: str = Field(min_length=8)
+    order_number: str | None = None
     cost_sum: int
     item_ids: list[int]
     address: str

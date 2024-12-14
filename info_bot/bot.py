@@ -53,11 +53,9 @@ async def index(message: Message) -> None:
     return
         
         
-    
-
 
 async def main() -> None:
-    bot = Bot(token=settings.token,default=DefaultBotProperties())
+    bot = Bot(token=settings.token, default=DefaultBotProperties())
 
     await dp.start_polling(bot)
 
