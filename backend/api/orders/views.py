@@ -4,7 +4,7 @@ from core.db import db
 from .schemas import OrderCreateSchema, OrderInfoReadSchema
 from . import utils, crud
 from .bot_api import bot_crud
-
+from .bot_api.utils import bot_utils
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
@@ -46,3 +46,9 @@ async def index(
 ):
     return await crud.get_order(session=session, order_id=order_id)
 
+@router.post("/test_send_new_order")
+async def index(
+    order_id: int,
+    order_number: str
+):
+    return await bot_utils.send_new_order_to_bot(order_id=order_id, order_number=order_number)

@@ -12,12 +12,17 @@ AWS_ACCESS_KEY: str = os.environ.get("AWS_ACCESS_KEY")
 AWS_SECRET_KEY: str = os.environ.get("AWS_SECRET_KEY")
 AWS_BUCKETNAME: str = os.environ.get("AWS_BUCKETNAME")
 GET_S3_URL: str = os.environ.get("GET_S3_URL")
+BOT_TOKEN: str = os.environ.get("BOT_TOKEN")
+CHAT_ID: int = os.environ.get("CHAT_ID")
+
 
 class RunConfig(BaseModel):
     port: int = PORT
     reload: bool = True
 
-
+class BotConfig(BaseModel):
+    token: str = BOT_TOKEN
+    chat_id: int = CHAT_ID
 
 class DBConfig(BaseModel):
     url: str = DB_URL
@@ -36,6 +41,7 @@ class Settings(BaseSettings):
     runcfg: RunConfig = RunConfig()
     dbcfg: DBConfig = DBConfig()
     s3cfg: S3Config = S3Config()
+    botCfg: BotConfig = BotConfig()
 
 
 

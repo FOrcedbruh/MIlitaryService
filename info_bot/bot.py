@@ -17,7 +17,8 @@ dp = Dispatcher()
 
 @dp.message(CommandStart())
 async def index(message: Message) -> None:
-    await message.answer(text=f"{message.from_user.full_name}, бот готов к работе", reply_markup=main_keyboard())
+    await message.answer(text=f"{message.from_user.full_name}, бот готов к работе, chat_id: {message.chat.id}", reply_markup=main_keyboard())
+
 
 @dp.message()
 async def index(message: Message) -> None:

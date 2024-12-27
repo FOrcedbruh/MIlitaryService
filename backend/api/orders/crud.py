@@ -5,7 +5,7 @@ from fastapi import status, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from . import utils
-
+from .bot_api.utils import bot_utils
 
 async def create_order(session: AsyncSession, order_in: OrderCreateSchema) -> dict:
     stmt = await session.execute(select(Item).where(Item.id.in_(order_in.item_ids)))
@@ -16,18 +16,21 @@ async def create_order(session: AsyncSession, order_in: OrderCreateSchema) -> di
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Товаров не найдено"
         )
-
-
     new_order = Order(**order_in.model_dump(exclude="item_ids"))
     new_order.items.extend(items)
     new_order.order_number = utils.generate_order_number()
 
     session.add(new_order)
     await session.commit()
+    await session.refresh(new_order)
+
+    res: dict = await bot_utils.send_new_order_to_bot(order_id=new_order.id, order_number=new_order.order_number)
 
     return {
         "status": status.HTTP_406_NOT_ACCEPTABLE,
         "detail": "Заказ успешно оформлен",
+        "bot_message": res["message"]
+
     }
 
 async def get_order(session: AsyncSession, order_id: int) -> OrderReadSchema:

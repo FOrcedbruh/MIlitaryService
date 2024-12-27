@@ -5,7 +5,9 @@ from core.settings import settings
 from api import router as ApiRouter
 
 
-app = FastAPI()
+app = FastAPI(
+    title="Military Online Shop",
+)
 app.include_router(router=ApiRouter)
 app.add_middleware(
     CORSMiddleware,

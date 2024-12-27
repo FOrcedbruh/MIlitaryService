@@ -57,7 +57,7 @@ class RequestsHelper():
         return
     
     def error_text_message(self, error_reason: str, status_code: int) -> str:
-        return f"Ошиба на сервере: {str(status_code)} {error_reason}"
+        return f"Ошибка: {str(status_code)} {error_reason}"
     
     async def error_response_form(
         self,
