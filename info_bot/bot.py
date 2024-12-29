@@ -1,18 +1,17 @@
 from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart
 from aiogram.client.default import DefaultBotProperties
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 import asyncio
 from settings import settings
 import logging
 import sys
 from keyboards import main_keyboard
+from utils import get_all_orders, get_last_order, get_order_by_id
 from api import requestHelper
-from schemas import OrderInfoReadSchema
-from requests import Response
-
 
 dp = Dispatcher()
+bot = Bot(token=settings.token, default=DefaultBotProperties())
 
 
 @dp.message(CommandStart())
@@ -23,41 +22,34 @@ async def index(message: Message) -> None:
 @dp.message()
 async def index(message: Message) -> None:
     if (message.text == "Посмотреть все заказы"):
-        try:
-            orders: Response = requestHelper.get_orders()
-            orders_json: list[OrderInfoReadSchema] = orders.json()
-            if (orders.status_code != 200):
-                await requestHelper.error_response_form(message=message, error_reason=orders.reason, status_code=orders.status_code)
-                return
-            await message.answer(text="Вот все текущие и завершенные заказы 📦")
-            for order_json in orders_json:
-                await requestHelper.orders_response_form(**order_json, message=message)
-            return
-        except Exception:
-            await message.answer(text=requestHelper.INACTIVE)
-            return
-        
+       await get_all_orders(message=message)
+       return
     if (message.text == "Последний заказ"):
-        try:
-            order: Response = requestHelper.get_last_order()
-            if (order.status_code != 200):
-                await requestHelper.error_response_form(message=message, error_reason=order.reason, status_code=order.status_code)
-                return
-            order_json = order.json()
-            await message.answer(text="Последний оформленный заказ ⏳")
-            await requestHelper.orders_response_form(**order_json, message=message)
-            return
-        except Exception:
-            await message.answer(text=requestHelper.INACTIVE)
+        await get_last_order(message=message)
+        return
     else:
         await message.answer("Некорректная команда")
     return
-        
-        
+
+
+@dp.callback_query()
+async def view_data_by_callback(cq: CallbackQuery):
+    info, order_id, order_number = cq.data.split(":")
+
+    try:
+        await cq.answer(text=f"Вот данные заказа с номером {order_number}")
+        current_order = await get_order_by_id(order_id=order_id, order_number=order_number)
+    except Exception:
+        await bot.send_message(chat_id=int(settings.chat_id), text=requestHelper.INACTIVE)
+        return
+
+    answer_text: str = requestHelper.get_text_form_for_order(**current_order)
+    await bot.send_message(chat_id=int(settings.chat_id), text=f"Данные заказа с номером {order_number}")
+    await bot.send_message(chat_id=int(settings.chat_id), text=(answer_text), parse_mode="HTML")
+
+
 
 async def main() -> None:
-    bot = Bot(token=settings.token, default=DefaultBotProperties())
-
     await dp.start_polling(bot)
 
 

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.db import db
 from .schemas import OrderCreateSchema, OrderInfoReadSchema
 from . import utils, crud
-from .bot_api import bot_crud
+from .bot_api.crud import bot_crud
 from .bot_api.utils import bot_utils
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
@@ -48,7 +48,14 @@ async def index(
 
 @router.post("/test_send_new_order")
 async def index(
-    order_id: int,
-    order_number: str
+    order_number: str,
+    order_id: int
 ):
     return await bot_utils.send_new_order_to_bot(order_id=order_id, order_number=order_number)
+
+@router.get("/get_order_by_id_for_bot/{order_id}")
+async def index(
+    order_id: int,
+    session: AsyncSession = Depends(db.generate_session)
+):
+    return await bot_crud.get_order_for_bot_by_id(order_id=order_id, session=session)

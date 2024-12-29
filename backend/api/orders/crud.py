@@ -16,6 +16,7 @@ async def create_order(session: AsyncSession, order_in: OrderCreateSchema) -> di
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Товаров не найдено"
         )
+    
     new_order = Order(**order_in.model_dump(exclude="item_ids"))
     new_order.items.extend(items)
     new_order.order_number = utils.generate_order_number()
@@ -24,7 +25,7 @@ async def create_order(session: AsyncSession, order_in: OrderCreateSchema) -> di
     await session.commit()
     await session.refresh(new_order)
 
-    res: dict = await bot_utils.send_new_order_to_bot(order_id=new_order.id, order_number=new_order.order_number)
+    res: dict = await bot_utils.send_new_order_to_bot(order_number=new_order.order_number, order_id=new_order.id)
 
     return {
         "status": status.HTTP_406_NOT_ACCEPTABLE,
