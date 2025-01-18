@@ -1,0 +1,4 @@
+
+
+NOT_FOUND_ORDER_EXCEPTION_STATUS: int = 400
+NOT_FOUND_ORDER_EXCEPTION_DETAIL: str = "Заказы не найдены"
