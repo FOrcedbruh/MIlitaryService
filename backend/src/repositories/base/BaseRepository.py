@@ -15,8 +15,8 @@ class BaseRepository(Generic[ModelType]):
         self.session = session
         self.not_found_exception = not_found_exception
     
-    async def list(self) -> list[ModelType]:
-        query = select(self.model)
+    async def list(self, offset: int, limit: int) -> list[ModelType]:
+        query = select(self.model).offset(offset).limit(limit)
         stmt = await self.session.execute(query)
         res = stmt.scalars().all()
         if not res:

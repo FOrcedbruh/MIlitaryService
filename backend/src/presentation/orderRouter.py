@@ -1,11 +1,17 @@
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Depends, Query
 from dto.orders import OrderReadSchema, OrderCreateSchema, OrderReadSchemaAfterCreate
 from services import OrderService
 from dependencies import get_order_service
+from dto.pagination_dto.pagination import PaginationSchema
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
-
+@router.get("/", response_model=list[OrderReadSchema])
+async def index(
+    pagination: PaginationSchema = Query(),
+    service: OrderService = Depends(get_order_service)
+) -> list[OrderReadSchema]:
+    return await service.get_orders(pagination)
 
 @router.get("/{order_id}", response_model=OrderReadSchema)
 async def index(
@@ -21,8 +27,3 @@ async def index(
 ) -> OrderReadSchemaAfterCreate:
     return await service.create_order(order_in)
 
-@router.get("/", response_model=list[OrderReadSchema])
-async def index(
-    service: OrderService = Depends(get_order_service)
-) -> list[OrderReadSchema]:
-    return await service.get_orders()

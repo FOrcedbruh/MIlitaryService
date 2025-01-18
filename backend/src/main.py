@@ -4,6 +4,7 @@ import uvicorn
 from core.config import settings
 from presentation import router as ApiRouter
 from repositories.base.exceptions import BaseException
+from core.middlware import LoggingMiddlaware
 
 app = FastAPI(
     title="Military Online Shop",
@@ -16,6 +17,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_headers=["*"]
 )
+app.add_middleware(LoggingMiddlaware)
 @app.exception_handler(BaseException)
 def exception_handler(req, exc: BaseException):
     raise HTTPException(

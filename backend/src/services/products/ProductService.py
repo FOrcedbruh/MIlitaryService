@@ -2,7 +2,7 @@ from repositories import ProductRepository
 from dto.products import ProductCreateSchema, ProductReadSchema, ProductUpdateSchema
 from models import Product
 from repositories.s3 import ProductS3Repository
-
+from dto.pagination_dto.pagination import PaginationSchema
 
 
 class ProductService():
@@ -11,8 +11,8 @@ class ProductService():
         self.repository = repository
 
 
-    async def get_products(self) -> list[ProductReadSchema]:
-        return await self.repository.list()
+    async def get_products(self, pagination: PaginationSchema) -> list[ProductReadSchema]:
+        return await self.repository.list(**pagination.model_dump(exclude_none=True))
     
 
     async def get_product_by_id(self, product_id: int) -> ProductReadSchema:

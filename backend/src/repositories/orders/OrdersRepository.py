@@ -35,8 +35,8 @@ class OrdersRepository(BaseRepository[Order]):
 
         return data
     
-    async def get_all(self) -> list[Order]:
-        query = select(self.model).options(selectinload(self.model.products))
+    async def get_all(self, offset: int, limit: int) -> list[Order]:
+        query = select(self.model).offset(offset).limit(limit).options(selectinload(self.model.products))
         stmt = await self.session.execute(query)
         res = stmt.scalars().all()
         if not res:

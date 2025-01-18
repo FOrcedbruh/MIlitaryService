@@ -1,17 +1,19 @@
-from fastapi import Depends, Body, APIRouter, File, UploadFile
+from fastapi import Depends, Body, APIRouter, File, UploadFile, Query
 from services import ProductService
 from dependencies import get_product_service, get_product_s3
 from dto.products import ProductReadSchema, ProductCreateSchema, ProductUpdateSchema
 from repositories.s3 import ProductS3Repository
+from dto.pagination_dto.pagination import PaginationSchema
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
 
 @router.get("/", response_model=list[ProductReadSchema])
 async def index(
+    pagination: PaginationSchema = Query(),
     service: ProductService = Depends(get_product_service)
 ) -> list[ProductReadSchema]:
-    return await service.get_products()
+    return await service.get_products(pagination)
 
 
 @router.get("/{product_id}", response_model=ProductReadSchema)
@@ -47,6 +49,7 @@ async def index(
     s3: ProductS3Repository = Depends(get_product_s3)
 ) -> ProductReadSchema:
     return await service.update_images(product_id, files, s3)
+
 
 @router.delete("/{product_id}", response_model=dict)
 async def index(
