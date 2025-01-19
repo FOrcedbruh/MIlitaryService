@@ -12,6 +12,8 @@ python-dotenv = "^1.0.1"
 pydantic-settings = "^2.6.1"
 asyncio = "^3.4.3"
 requests = "^2.32.3"
+httpx = "^0.28.1"
+colorama = "^0.4.6"
 
 
 [build-system]
