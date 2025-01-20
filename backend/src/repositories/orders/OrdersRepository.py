@@ -42,6 +42,16 @@ class OrdersRepository(BaseRepository[Order]):
         if not res:
             raise self.not_found_exception
         return list(res)
+    
+    async def get_one_by_number(self, data: str) -> Order:
+        query = select(self.model).where(self.model.order_number == data).options(selectinload(self.model.products))
+        stmt = await self.session.execute(query)
+        res = stmt.scalar_one_or_none()
+
+        if res is None:
+            raise self.not_found_exception
+        
+        return res
         
 
 

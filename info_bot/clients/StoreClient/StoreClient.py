@@ -17,7 +17,7 @@ class StoreClient(AbstractClient):
         return res.json()
     
     @retry(times=6, sleep_secs=2)
-    async def get_one(self, endpoint: str) -> OrderReadSchema:
+    def get_one(self, endpoint: str) -> OrderReadSchema:
         res: Response = httpx.get(url=self.url+endpoint)
         logger.info(f"Ответ: {res.status_code} от {res._request.method} {self.url+endpoint}")
         return res.json()

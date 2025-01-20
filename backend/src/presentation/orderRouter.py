@@ -13,6 +13,15 @@ async def index(
 ) -> list[OrderReadSchema]:
     return await service.get_orders(pagination)
 
+
+@router.get("/by_number", response_model=OrderReadSchema)
+async def index(
+    order_number: str = Query(),
+    service: OrderService = Depends(get_order_service)
+) -> OrderReadSchema:
+    return await service.get_order_by_number(order_number)
+
+
 @router.get("/{order_id}", response_model=OrderReadSchema)
 async def index(
     order_id: int,
@@ -20,10 +29,13 @@ async def index(
 ) -> OrderReadSchema:
     return await service.get_order(order_id)
 
+
 @router.post("/", response_model=OrderReadSchemaAfterCreate)
 async def index(
     order_in: OrderCreateSchema,
     service: OrderService = Depends(get_order_service)
 ) -> OrderReadSchemaAfterCreate:
     return await service.create_order(order_in)
+
+
 
