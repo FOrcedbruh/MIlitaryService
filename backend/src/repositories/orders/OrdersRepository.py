@@ -52,6 +52,13 @@ class OrdersRepository(BaseRepository[Order]):
             raise self.not_found_exception
         
         return res
+    
+    async def get_numbers(self) -> list[str]:
+        query = select(self.model.order_number)
+        stmt = await self.session.execute(query)
+        res = stmt.scalars().all()
+
+        return res
         
 
 

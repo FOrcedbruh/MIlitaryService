@@ -9,9 +9,9 @@ def main_keyboard() -> ReplyKeyboardMarkup:
     keyboard = ReplyKeyboardMarkup(keyboard=kb_list, resize_keyboard=True)
     return keyboard
 
-def order_numbers_keyboard() -> ReplyKeyboardMarkup:
-    kb_list: list = [
-        [KeyboardButton(text="12345678"), KeyboardButton(text="3421565")]
-    ]
+def order_numbers_keyboard(orders: list[str]) -> ReplyKeyboardMarkup:
+    kb_list: list = []
+    for order in orders:
+        kb_list.append([KeyboardButton(text=order)])
     keyboard = ReplyKeyboardMarkup(keyboard=kb_list, resize_keyboard=True)
     return keyboard

@@ -37,10 +37,12 @@ async def get_orders(message: Message) -> None:
 @dp.message(lambda message: message.text == "Посмотреть подробности заказа")
 async def check_info_by_order(message: Message) -> None:
     get_order_state.set_true()
+    store_client = StoreClient(url=settings.store_base_url)
     logger.info(f"Пользователь с id ({str(message.from_user.id)}) нажал на кнопку 'Посмотреть подробности заказа'")
+    orders: list[str] = store_client.get_numbers(endpoint="orders/numbers")
     await message.answer(
         text="Выберите номер заказа",
-        reply_markup=order_numbers_keyboard()
+        reply_markup=order_numbers_keyboard(orders)
     )
 
 

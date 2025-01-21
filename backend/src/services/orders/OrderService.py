@@ -29,3 +29,6 @@ class OrderService():
     
     async def get_order_by_number(self, order_number: str) -> OrderReadSchema:
         return await self.repository.get_one_by_number(order_number)
+    
+    async def get_all_order_numbers(self) -> list[str]:
+        return await self.repository.get_numbers()

@@ -22,5 +22,11 @@ class StoreClient(AbstractClient):
         logger.info(f"Ответ: {res.status_code} от {res._request.method} {self.url+endpoint}")
         return res.json()
     
+    @retry(times=5, sleep_secs=1)
+    def get_numbers(self, endpoint: str) -> list[str]:
+        res: Response  = httpx.get(url=self.url+endpoint)
+        logger.info(f"Ответ: {res.status_code} от {res._request.method} {self.url+endpoint}")
+        return res.json()
+    
 
     

@@ -21,6 +21,11 @@ async def index(
 ) -> OrderReadSchema:
     return await service.get_order_by_number(order_number)
 
+@router.get("/numbers", response_model=list[str])
+async def index(
+    service: OrderService = Depends(get_order_service)
+) -> list[str]:
+    return await service.get_all_order_numbers()
 
 @router.get("/{order_id}", response_model=OrderReadSchema)
 async def index(
