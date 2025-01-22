@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query
-from dto.orders import OrderReadSchema, OrderCreateSchema, OrderReadSchemaAfterCreate
+from dto.orders import OrderReadSchema, OrderCreateSchema, OrderReadSchemaAfterCreate, OrderReadInfoSchema
 from services import OrderService
 from dependencies import get_order_service
 from dto.pagination_dto.pagination import PaginationSchema
@@ -14,11 +14,11 @@ async def index(
     return await service.get_orders(pagination)
 
 
-@router.get("/by_number", response_model=OrderReadSchema)
+@router.get("/by_number", response_model=OrderReadInfoSchema)
 async def index(
     order_number: str = Query(),
     service: OrderService = Depends(get_order_service)
-) -> OrderReadSchema:
+) -> OrderReadInfoSchema:
     return await service.get_order_by_number(order_number)
 
 @router.get("/numbers", response_model=list[str])

@@ -1,4 +1,4 @@
-from dto.orders import OrderReadSchema, OrderCreateSchema, OrderReadSchemaAfterCreate
+from dto.orders import OrderReadSchema, OrderCreateSchema, OrderReadSchemaAfterCreate, OrderReadInfoSchema
 from repositories import OrdersRepository
 from models import Order
 from dto.pagination_dto.pagination import PaginationSchema
@@ -27,8 +27,18 @@ class OrderService():
     async def get_orders(self, pagination: PaginationSchema) -> list[OrderReadSchema]:
         return await self.repository.get_all(**pagination.model_dump(exclude_none=True))
     
-    async def get_order_by_number(self, order_number: str) -> OrderReadSchema:
-        return await self.repository.get_one_by_number(order_number)
+    async def get_order_by_number(self, order_number: str) -> OrderReadInfoSchema:
+        order = await self.repository.get_one_by_number(order_number)
+        res = order.__dict__
+
+        products = res["products"]
+        products_names = []
+        for product in products:
+            products_names.append(product.name)
+        res["products"] = products_names
+
+        return res
+
     
     async def get_all_order_numbers(self) -> list[str]:
         return await self.repository.get_numbers()

@@ -7,7 +7,7 @@ from core import settings, logger
 from keyboards import main_keyboard, order_numbers_keyboard
 from clients import StoreClient
 from helpers.states import OrderByNumberState
-
+from presentation.OrderMessage import OrderFormatting
 
 
 dp = Dispatcher()
@@ -51,9 +51,11 @@ async def get_order_by_number(message: Message):
     logger.info(f"Пользователь с id ({str(message.from_user.id)}) запросил заказ с номером {message.text}")
     get_order_state.set_false()
     store_client = StoreClient(url=settings.store_base_url)
+    order_formatting = OrderFormatting()
     try:
         order = store_client.get_one(endpoint=f"orders/by_number?order_number={message.text}")
-        print(order)
+        content = order_formatting.get_content(order)
+        await message.answer(**content.as_kwargs())
     except Exception as e:
         await message.answer(f"Ошибка получения заказа: {e}")
     await message.answer(text=message.text, reply_markup=main_keyboard())

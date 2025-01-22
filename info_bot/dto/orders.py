@@ -7,7 +7,7 @@ class OrderReadSchema(BaseModel):
     order_number: str = Field(max_length=12)
     address: str
     delivery_type: str
-    payment_yupe: str
+    payment_type: str
     is_paid: bool
     customer_phone: str
     customer_email: str
