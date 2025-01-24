@@ -14,4 +14,5 @@ class OrderReadSchema(BaseModel):
     id: int
     created_at: datetime
     customer_name: str
+    products: list[str]
 

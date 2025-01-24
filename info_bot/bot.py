@@ -55,10 +55,9 @@ async def get_order_by_number(message: Message):
     try:
         order = store_client.get_one(endpoint=f"orders/by_number?order_number={message.text}")
         content = order_formatting.get_content(order)
-        await message.answer(**content.as_kwargs())
+        await message.answer(**content.as_kwargs(), reply_markup=main_keyboard())
     except Exception as e:
         await message.answer(f"Ошибка получения заказа: {e}")
-    await message.answer(text=message.text, reply_markup=main_keyboard())
 
 
 @dp.callback_query()
