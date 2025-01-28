@@ -51,3 +51,13 @@ class ProductRepository(BaseRepository[Product]):
             raise self.not_found_exception
 
         return list(res)
+
+    async def delete(self, id: int) -> list[str] | None:
+        res = await self.session.get(self.model, id)
+        if not res:
+            raise self.not_found_exception
+        
+        await self.session.delete(res)
+        await self.session.commit()
+        
+        return res.images

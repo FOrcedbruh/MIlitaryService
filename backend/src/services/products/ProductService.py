@@ -28,9 +28,10 @@ class ProductService():
         return await self.repository.update(product_in.model_dump(exclude_none=True), product_id)
     
 
-    async def delete_product(self, product_id: int, keys: list[str], s3: ProductS3Repository) -> dict:
-        await s3.delete_images(keys)
-        await self.repository.delete(product_id)
+    async def delete_product(self, product_id: int, s3: ProductS3Repository) -> dict:
+        keys = await self.repository.delete(product_id)
+        if keys is not None:
+            await s3.delete_images(keys)
 
         return {
             "message": "Товар успешно удален"

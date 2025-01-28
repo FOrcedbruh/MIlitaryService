@@ -54,6 +54,7 @@ async def index(
 @router.delete("/{product_id}", response_model=dict)
 async def index(
     product_id: int,
+    s3: ProductS3Repository = Depends(get_product_s3),
     service: ProductService = Depends(get_product_service)
 ) -> dict:
-    return await service.delete_product(product_id)
+    return await service.delete_product(product_id, s3)

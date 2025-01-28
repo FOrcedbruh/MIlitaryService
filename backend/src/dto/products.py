@@ -11,7 +11,7 @@ class ProductCreateSchema(BaseModel):
 class ProductReadSchema(ProductCreateSchema):
     id: int
     created_at: datetime
-    images: list[str]
+    images: list[str] | None
     
 
 class ProductUpdateSchema(BaseModel):
