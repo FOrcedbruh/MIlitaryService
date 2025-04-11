@@ -14,6 +14,7 @@ AWS_BUCKETNAME: str = os.environ.get("AWS_BUCKETNAME")
 GET_S3_URL: str = os.environ.get("GET_S3_URL")
 BOT_TOKEN: str = os.environ.get("BOT_TOKEN")
 CHAT_ID: int = os.environ.get("CHAT_ID")
+DADATA_BASE_URL: str = os.environ.get("DADATA_BASE_URL")
 
 
 class RunConfig(BaseModel):
@@ -35,6 +36,10 @@ class S3Config(BaseModel):
     access_key: str = AWS_ACCESS_KEY
     bucketname: str = AWS_BUCKETNAME
     get_url: str = GET_S3_URL
+    len_get_s3_url: int = len(GET_S3_URL)
+
+class DadataConfig(BaseModel):
+    base_url: str = DADATA_BASE_URL
 
 
 class Settings(BaseSettings):
@@ -42,6 +47,7 @@ class Settings(BaseSettings):
     dbcfg: DBConfig = DBConfig()
     s3cfg: S3Config = S3Config()
     botCfg: BotConfig = BotConfig()
+    dadatacfg: DadataConfig = DadataConfig()
 
 
 

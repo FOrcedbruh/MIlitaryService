@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Body
 from dto.orders import OrderReadSchema, OrderCreateSchema, OrderReadSchemaAfterCreate, OrderReadInfoSchema
 from services import OrderService
 from dependencies import get_order_service
@@ -41,6 +41,14 @@ async def index(
     service: OrderService = Depends(get_order_service)
 ) -> OrderReadSchemaAfterCreate:
     return await service.create_order(order_in)
+
+
+@router.post("/address/suggest", response_model=list)
+async def suggest_address(
+    address_part: str = Body(),
+    service: OrderService = Depends(get_order_service)
+):
+    return await service.suggest_address(address_part)
 
 
 

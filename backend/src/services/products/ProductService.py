@@ -3,6 +3,8 @@ from dto.products import ProductCreateSchema, ProductReadSchema, ProductUpdateSc
 from models import Product
 from repositories.s3 import ProductS3Repository
 from dto.pagination_dto.pagination import PaginationSchema
+from core.config import settings
+
 
 
 class ProductService():
@@ -29,7 +31,11 @@ class ProductService():
     
 
     async def delete_product(self, product_id: int, s3: ProductS3Repository) -> dict:
-        keys = await self.repository.delete(product_id)
+        urls = await self.repository.delete(product_id)
+        keys: list[str] = []
+        for url in urls:
+            keys.append(url[settings.s3cfg.len_get_s3_url+1:])
+
         if keys is not None:
             await s3.delete_images(keys)
 

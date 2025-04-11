@@ -3,6 +3,7 @@ from repositories import OrdersRepository
 from models import Order
 from dto.pagination_dto.pagination import PaginationSchema
 from .helpers.utils import generate_order_number
+from utils.dadata.dadata_service import DadataService
 
 class OrderService():
 
@@ -38,6 +39,11 @@ class OrderService():
         res["products"] = products_names
 
         return res
+    
+    async def suggest_address(self, address_part: str) -> list:
+        async with DadataService() as client:
+            res = await client.suggest_address(address_part)
+        return [x["value"] for x in res]
 
     
     async def get_all_order_numbers(self) -> list[str]:

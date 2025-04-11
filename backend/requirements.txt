@@ -1,0 +1,9 @@
+fastapi[all]
+asyncpg
+alembic
+python-dotenv
+requests
+greenlet
+aiobotocore
+aiogram
+pytest-asyncio
